@@ -3,7 +3,8 @@ import 'flatpickr/dist/flatpickr.min.css';
 
 let dateSelected;
 const startBtnRef = document.querySelector('button[data-start]');
-const daysRef = document.querySelector('span[data-hours]');
+const daysRef = document.querySelector('span[data-days]');
+const hoursRef = document.querySelector('span[data-hours]');
 const minutesRef = document.querySelector('span[data-minutes]');
 const secondsRef = document.querySelector('span[data-seconds]');
 
@@ -21,8 +22,18 @@ function timerStart() {
   setInterval(() => {
     const dateNow = Date.now();
     const difference = dateSelected - dateNow;
-    console.log(convertMs(difference));
+    const structuredDiff = convertMs(difference);
+    console.log(structuredDiff);
+    daysRef.textContent = structuredDiff.days;
+    hoursRef.textContent = structuredDiff.hours;
+    hoursRef.textContent = structuredDiff.hours;
+    minutesRef.textContent = structuredDiff.minutes;
+    secondsRef.textContent = structuredDiff.seconds;
   }, 1000);
+}
+
+function addLeadingZero(value) {
+  return String(value);
 }
 
 startBtnRef.addEventListener('click', timerStart);
