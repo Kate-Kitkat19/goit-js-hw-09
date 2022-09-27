@@ -2,7 +2,7 @@ import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import Notiflix from 'notiflix';
 
-let dateSelected;
+let dateSelected = null;
 const startBtnRef = document.querySelector('button[data-start]');
 const daysRef = document.querySelector('span[data-days]');
 const hoursRef = document.querySelector('span[data-hours]');
@@ -27,17 +27,18 @@ const timer = flatpickr('#datetime-picker', {
   },
 });
 
+startBtnRef.addEventListener('click', timerStart);
+
 function timerStart() {
   const intervalID = setInterval(() => {
     const dateNow = Date.now();
     const difference = dateSelected - dateNow;
-    if (difference <= 999) {
-      clearInterval(intervalID);
+    if (difference <= 0) {
       Notiflix.Notify.success('The time has come!');
+      clearInterval(intervalID);
       return;
     }
     const structuredDiff = convertMs(difference);
-    console.log(structuredDiff);
     daysRef.textContent = addLeadingZero(structuredDiff.days);
     hoursRef.textContent = addLeadingZero(structuredDiff.hours);
     hoursRef.textContent = addLeadingZero(structuredDiff.hours);
@@ -45,8 +46,6 @@ function timerStart() {
     secondsRef.textContent = addLeadingZero(structuredDiff.seconds);
   }, 1000);
 }
-
-startBtnRef.addEventListener('click', timerStart);
 
 function convertMs(ms) {
   // Number of milliseconds per unit of time
@@ -66,6 +65,7 @@ function convertMs(ms) {
 
   return { days, hours, minutes, seconds };
 }
+
 function addLeadingZero(value) {
   return String(value).padStart(2, '0');
 }
