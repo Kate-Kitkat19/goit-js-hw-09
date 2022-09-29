@@ -1,23 +1,22 @@
 import Notiflix from 'notiflix';
 
 const refs = {
-  formRef: document.querySelector('.form'),
-  delayRef: document.querySelector('input[name="delay"]'),
-  stepRef: document.querySelector('input[name="step"]'),
-  amountRef: document.querySelector('input[name="amount"]'),
+  form: document.querySelector('.form'),
+  delay: document.querySelector('input[name="delay"]'),
+  step: document.querySelector('input[name="step"]'),
+  amount: document.querySelector('input[name="amount"]'),
 };
 
-refs.formRef.addEventListener('submit', onFormSubmit);
+refs.form.addEventListener('submit', onFormSubmit);
 
 function onFormSubmit(e) {
   e.preventDefault();
-  const amount = refs.amountRef.value;
-  const delay = refs.delayRef.value;
-  const step = refs.stepRef.value;
-  for (let i = 1; i <= amount; i += 1) {
-    const position = [i];
+  const amount = refs.amount.value;
+  const delay = refs.delay.value;
+  const step = refs.step.value;
+  for (let i = 0; i < amount; i += 1) {
+    const position = Number(i) + 1;
     const currentDelay = Number(delay) + step * [i];
-    console.log('currentDelay', currentDelay);
     createPromise(position, currentDelay)
       .then(({ position, delay }) => {
         notifySuccess({ position, delay });
@@ -48,5 +47,3 @@ function notifyError({ position, delay }) {
 function notifySuccess({ position, delay }) {
   Notiflix.Notify.success(`✅ Fulfilled promise ${position} in ${delay}ms`);
 }
-
-//

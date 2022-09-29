@@ -4,10 +4,13 @@ import Notiflix from 'notiflix';
 
 let dateSelected = null;
 const startBtnRef = document.querySelector('button[data-start]');
-const daysRef = document.querySelector('span[data-days]');
-const hoursRef = document.querySelector('span[data-hours]');
-const minutesRef = document.querySelector('span[data-minutes]');
-const secondsRef = document.querySelector('span[data-seconds]');
+const timerRefs = {
+  days: document.querySelector('span[data-days]'),
+  hours: document.querySelector('span[data-hours]'),
+  minutes: document.querySelector('span[data-minutes]'),
+  seconds: document.querySelector('span[data-seconds]'),
+};
+
 startBtnRef.disabled = true;
 
 const timer = flatpickr('#datetime-picker', {
@@ -20,7 +23,7 @@ const timer = flatpickr('#datetime-picker', {
     const dateNow = Date.now();
     const initDiff = dateSelected - dateNow;
     if (initDiff <= 0) {
-      Notiflix.Notify.failure('Please choose a date in the future');
+      notifyError();
     } else {
       startBtnRef.disabled = false;
     }
@@ -34,17 +37,19 @@ function timerStart() {
     const dateNow = Date.now();
     const difference = dateSelected - dateNow;
     if (difference <= 0) {
-      Notiflix.Notify.success('The time has come!');
+      notifySuccess();
       clearInterval(intervalID);
       return;
     }
     const structuredDiff = convertMs(difference);
-    daysRef.textContent = addLeadingZero(structuredDiff.days);
-    hoursRef.textContent = addLeadingZero(structuredDiff.hours);
-    hoursRef.textContent = addLeadingZero(structuredDiff.hours);
-    minutesRef.textContent = addLeadingZero(structuredDiff.minutes);
-    secondsRef.textContent = addLeadingZero(structuredDiff.seconds);
+    updateDOM(timerRefs, structuredDiff);
   }, 1000);
+}
+
+function updateDOM(refs, data) {
+  Object.keys(refs).forEach(key => {
+    refs[key].textContent = addLeadingZero(data[key]);
+  });
 }
 
 function convertMs(ms) {
@@ -68,4 +73,11 @@ function convertMs(ms) {
 
 function addLeadingZero(value) {
   return String(value).padStart(2, '0');
+}
+
+function notifyError() {
+  Notiflix.Notify.failure('Please choose a date in the future');
+}
+function notifySuccess() {
+  Notiflix.Notify.success('The time has come!');
 }
